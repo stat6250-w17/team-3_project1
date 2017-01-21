@@ -20,4 +20,4 @@ relative file import path to the current directory, if using Windows;
 		%include "~/&sasUEFilePrefix./&dataPrepFileName.";
 	%end;
 %mend;
-%setup
+%setup;
