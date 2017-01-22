@@ -1,3 +1,16 @@
+*******************************************************************************;
+**************** 80-character banner for column width reference ***************;
+* (set window width to banner width to calibrate line length to 80 characters *;
+*******************************************************************************;
+* 
+ Dataset Name: Academic Performance Index(API)_analytic_file created in external
+ file STAT6250-01_w17-team-3_project1_data_preparation.sas, which is assumed to 
+ be in the same directory as this file
+
+* Environmental setup;
+
+* set relative file import path to current directory (using standard SAS trick);
+
 * Environmental Variables ;
 %let dataPrepFileName = STAT6250-01_w17-team-3_project1_data_preparation.sas;
 %let sasUEFilePrefix = proj1/team-3_project1;
@@ -22,12 +35,79 @@ relative file import path to the current directory, if using Windows;
 %mend;
 %setup;
 
-proc print data=work.api_analytic_file (obs=100) noobs;
-    title 'Title';
-    var dname sname;
+
+
+*******************************************************************************
+*******************************************************************************
+
+Research Question: What are the enrolment numbers by county of students 
+participating in the Academic Performance Index survey?
+
+Rationale: Summary statistics for counties are directly correlated to funding
+dollars.  This is a useful statistic to track.
+
+Methodology: Using proc sort to sort the data by county, we then use proc
+means to gather and compile stats on enrolment numbers for 2012.  We
+classify by county.
+;
+
+proc sort data=work.api_analytic_file;
+    by cname;
 run;
 
-proc means data=work.api_analytic_file;
-    class dname;
+proc means data=work.api_analytic_file noprint mean;
     var num12;
-    title 'Number of Students Included in the 2012 Growth API'
+    class cname;
+    output out=rrt (drop=_type_ _freq_ _stat_);
+run;
+
+title underlin=2 bcolor=bioy "Student Included in 2012 Survey by County";
+proc print data=rrt (firstobs=6 obs=30);
+run;
+title; 
+
+*******************************************************************************
+*******************************************************************************
+
+Research Question: What are the middle values with respect to enrolment
+across the years 2011-13, classified by school district?
+
+Rationale: Looking at middle values as opposed to averages is important when
+one doesn't want to let outliers influence the high probability of finding
+a central tendency, like an average.
+
+Methodology: Use the ever handy proc means with the median option.
+;
+
+title underlin=1 bcolor=bioy "The Median value across data sets for 2011-13";
+proc means data=work.api_analytic_file median;
+    class dname;
+    var num11 num12 num13;
+    output out=rrt (drop=_type_);
+run;
+
+proc print data=rrt;
+run;
+
+*******************************************************************************
+*******************************************************************************
+
+Research Question: What are the 2012 quartiles of socioeconomically 
+disadvantaged students included in the 2012 Growth API, by District?
+
+Rationale: When talking about groups it is important to know what 
+quartile breakdown is all about.  Most specifically: benchmarking.  Setting up
+benchmarks in the plannaing and subsequent resolving of poverty issues is often
+super important in order to gague success or failure of social scholastic
+programs.
+
+Methodology: Using the proc means to run analysis on the disadvantaged students
+classified by district.
+;
+
+title underlin=1 bcolor=bioy "Quartile Breakdown of Socioeconomically 
+    Disadvantaged Students Included in the 2012 Growth API, by District";
+proc means min q1 median q3 max data=work.api_analytic_file;
+    class dname;
+    var sd_num12;
+run;
