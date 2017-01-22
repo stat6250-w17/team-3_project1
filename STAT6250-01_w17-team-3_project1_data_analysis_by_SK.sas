@@ -87,7 +87,9 @@ of overall API.In other words races that are underperformers and are affecting
 the API score needs to get more attention and resourses in order for them
 to meet good API standards.
 
-Methodology-
+Methodology-Created new dataset with numeric value to calculate mean beacause 
+the current variables were of CHAR type.Use PROC means to calculate average 
+API's for each race grouped by county. 
 ;
 
 data new_api_analytic_file;        /*Creating new dataset with numeric values*/
@@ -102,6 +104,7 @@ data new_api_analytic_file;        /*Creating new dataset with numeric values*/
     new_WH_API13 = WH_API13*1;
 run;
 
+title underlin=1 bcolor=bilg "Comparision of average API score for all races";
 proc means data=new_api_analytic_file mean ; /*grouped by county for all race*/
     class CNAME;
     var new_API13 new_AA_API13 new_AI_API13 new_AS_API13 new_FI_API13
@@ -118,8 +121,13 @@ Rationale-This would help us determine the performance of charters and non cha-
 -rters schools following which we can look for the reasons for variation in API
 scores. 
 
-Methodology-
+Methodology-Use PROC Sort by Charter  as best practice to sort the data according
+to the type of school.Created new dataset for API value of 2013 as numeric 
+and filled up blanks in column charter.Use PROC means to look at avaerage API
+scores for 2013 grouped by type of charter schools.
+N= NON charter , Y = Charter not directly funded , D = Directly funded charter.
 ;
+
 proc sort data=new_api_analytic_file out=new_api_analytic_sort;
 by descending CHARTER;          /*sorting by type of schools as best practice*/
 RUN;
@@ -138,6 +146,7 @@ proc means data=new_api_analytic_sort_fill mean noprint;
     mean = mean_dname;
 run;
 
+title underlin=1 bcolor=bilg " Average API scores-By School type";
 proc print data= new_api_analytic_sort_grpd(rename=(mean_dname=Average) 
 rename=(_FREQ_=NumberOfSchools) rename=(CHARTER=School_Type));/*rename header*/
 run;
