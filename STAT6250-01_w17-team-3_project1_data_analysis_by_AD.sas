@@ -27,7 +27,7 @@ composite key, field 1 known as: CDS.
 
 * Setting up the Environmental Variable. ;
 %let inputDatasetURL =
- http://filebin.ca/39ZmX25Ch6oa/14avgtx.xls
+ http://filebin.ca/39fqpWfteyyV/14avgtx.xls
 ;
 
 * Loading raw datafile via Internet;
@@ -91,7 +91,7 @@ data api_analytic_file;
         AS_NUM12
         AS_API12
         AS_NUM13
-        AS_API12
+        AS_API13
         AS_AVG_NW
         AS_AVG_W
         FI_NUM11
@@ -200,7 +200,7 @@ data api_analytic_file;
         AS_NUM12
         AS_API12
         AS_NUM13
-        AS_API12
+        AS_API13
         AS_AVG_NW
         AS_AVG_W
         FI_NUM11
@@ -270,4 +270,10 @@ data api_analytic_file;
         IRG5
     ;
     set api_raw;
+run;
+
+proc means data=work.api_analytic_file;
+    class dname;
+    var num12;
+    title 'Number of Students Included in the 2012 Growth API';
 run;
