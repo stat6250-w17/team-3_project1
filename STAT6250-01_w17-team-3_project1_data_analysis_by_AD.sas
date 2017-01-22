@@ -1,279 +1,116 @@
-*******************************************************************************
-**************** 80-character banner for column width reference ***************
-* (set window width to banner width to calibrate line length to 80 characters *
-*******************************************************************************
+*******************************************************************************;
+**************** 80-character banner for column width reference ***************;
+* (set window width to banner width to calibrate line length to 80 characters *;
+*******************************************************************************;
+* 
+ Dataset Name: Academic Performance Index(API)_analytic_file created in external
+ file STAT6250-01_w17-team-3_project1_data_preparation.sas, which is assumed to 
+ be in the same directory as this file
 
+* Environmental setup;
 
-This file prepares the dataset described below for analysis.
+* set relative file import path to current directory (using standard SAS trick);
 
-Dataset Name: 3-Year Average Academic Performance Index (API) Data File.
+* Environmental Variables ;
+%let dataPrepFileName = STAT6250-01_w17-team-3_project1_data_preparation.sas;
+%let sasUEFilePrefix = proj1/team-3_project1;
 
-Experimental Units: California public K-12 schools
+* load external file that generates analytic dataset "api_analytic_file" using
+ a system path dependent on the host operating system, after setting the 
+ relative file import path to the current directory, if using Windows;
+  
+%macro setup;
+%if
+	&SYSSCP. = WIN
+%then
+	%do;
+		X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";			
+		%include ".\&dataPrepFileName.";
+	%end;
+%else
+	%do;
+		%include "~/&sasUEFilePrefix./&dataPrepFileName.";
+	%end;
+%mend;
+%setup;
 
-Number of Observations: 9,596
+*
+Research Question - How does the increase/decrease of African-American kids
+affect the API score of the school ?
 
-Number of Features: 107
+Rationale- This analysis can be applied to any race by replace the variable by that
+race. This would help us to identify if increase or decrease of particular race 
+will affect the API score .
 
-Data Source: The file http://www3.cde.ca.gov/researchfiles/api/14avgtx.zip was
-downloaded and converted to an Excel file.  The data dile is now called
-14avgtx.xls.  Originally the data file did not have field headings.
-From the Data Dictionary field headings were added to the the Excel data file.
+Methodology - This is achieved by using PROC MEAN which calculated the  mean,
+sd, maximum ,minimum score of a data used based on classification district name using 
+variables of API Score and number of African-American kids in the school ;
 
-Data Dictionary: http://www.cde.ca.gov/ta/ac/ap/reclayoutApiAvg.asp
-
-Unique ID: The columns County_Code, District_Code, and School_Code form a
-composite key, field 1 known as: CDS.
-;
-
-* Setting up the Environmental Variable. ;
-%let inputDatasetURL =
- http://filebin.ca/39fqpWfteyyV/14avgtx.xls
-;
-
-* Loading raw datafile via Internet;
-filename APItemp TEMP;
-
-proc http
-    method="get" 
-    url="&inputDatasetURL." 
-    out=APItemp
-    ;
+proc sort data=api_analytic_file out=api_AA; 
+    by descending DNAME;
 run;
 
-proc import
-    file=APItemp
-    out=API_raw
-    dbms=xls
-    ;
+title  " Effect of African-American kids in API score";
+proc means data= api_AA ;        
+    var API11 API12 API13 AA_NUM11 AA_NUM12 AA_NUM13 ;
+    class DNAME;                                         
+run;
+title;
+
+*
+Research Question - How does the increase/decrease of Socioeconomically 
+disadvantaged students affect the API score of the school ?
+ 
+Rationale- This would help to see if the rating system should be modified based on the
+type of population of the school instead of using generic methodology for all schools. .
+
+Methodology - This is achieved by using PROC MEAN which calculated the  mean,
+sd, maximum ,minimum score of a data used based on classification district name using 
+variables of API Score and number of Socioeconomically 
+disadvantaged kids in the school ;
+
+ 
+title  " Effect of Socioeconomically disadvantaged students  in API score";
+proc means data= api_AA ;        
+    var API11 API12 API13 SD_NUM11 SD_NUM12 SD_NUM13 ;
+    class DNAME;                                         
+run;
+title;
+
+*Research Question -  What factors have contributed to increase of API of the school ?
+
+Rationale - This would help new schools to know what has worked so they can accomplish the same 
+result using similar modelling of school.
+
+Methodology- This is achieved by creating 2 data sets.One data set sorts school by API
+the second one sorts school by district and then merging the two data sets;
+
+proc sort data=api_analytic_file out=api_input; 
+    by descending DNAME;
+
+
+proc means data= api_input noprint mean;        
+    var  API13;
+    class DNAME;                                        
+    output 
+    out = api_output 
+    mean = api_mean;
 run;
 
-filename APItemp clear;
-
-* Build Data Set.  All data fields will be visible and accessed by field name.;
-data api_analytic_file;
-    retain
-        CDS
-        RTYPE
-        STYPE
-        SPED
-        SIZE
-        CHARTER
-        SNAME
-        DNAME
-        CNAME
-        FLAG
-        NUM11
-        API11
-        NUM12
-        API12
-        NUM13
-        API13
-        AVG_NW
-        AVG_W
-        AA_NUM11
-        AA_API11
-        AA_NUM12
-        AA_API12
-        AA_NUM13
-        AA_API13
-        AA_AVG_NW
-        AA_AVG_W
-        AI_NUM11
-        AI_API11
-        AI_NUM12
-        AI_API12
-        AI_NUM13
-        AI_API13
-        AI_AVG_NW
-        AI_AVG_W
-        AS_NUM11
-        AS_API11
-        AS_NUM12
-        AS_API12
-        AS_NUM13
-        AS_API13
-        AS_AVG_NW
-        AS_AVG_W
-        FI_NUM11
-        FI_API11
-        FI_NUM12
-        FI_API12
-        FI_NUM13
-        FI_API13
-        FI_AVG_NW
-        FI_AVG_W
-        HI_NUM11
-        HI_API11
-        HI_NUM12
-        HI_API12
-        HI_NUM13
-        HI_API13
-        HI_AVG_NW
-        HI_AVG_W
-        PI_NUM11
-        PI_API11
-        PI_NUM12
-        PI_API12
-        PI_NUM13
-        PI_API13
-        PI_AVG_NW
-        PI_AVG_W
-        WH_NUM11
-        WH_API11
-        WH_NUM12
-        WH_API12
-        WH_NUM13
-        WH_API13
-        WH_AVG_NW
-        WH_AVG_W
-        MR_NUM11
-        MR_API11
-        MR_NUM12
-        MR_API12
-        MR_NUM13
-        MR_API13
-        MR_AVG_NW
-        MR_AVG_W
-        SD_NUM11
-        SD_API11
-        SD_NUM12
-        SD_API12
-        SD_NUM13
-        SD_API13
-        SD_AVG_NW
-        SD_AVG_W
-        EL_NUM11
-        EL_API11
-        EL_NUM12
-        EL_API12
-        EL_NUM13
-        EL_API13
-        EL_AVG_NW
-        EL_AVG_W
-        DI_NUM11
-        DI_API11
-        DI_NUM12
-        DI_API12
-        DI_NUM13
-        DI_API13
-        DI_AVG_NW
-        DI_AVG_W
-        IRG5
-    ;
-    keep
-        CDS
-        RTYPE
-        STYPE
-        SPED
-        SIZE
-        CHARTER
-        SNAME
-        DNAME
-        CNAME
-        FLAG
-        NUM11
-        API11
-        NUM12
-        API12
-        NUM13
-        API13
-        AVG_NW
-        AVG_W
-        AA_NUM11
-        AA_API11
-        AA_NUM12
-        AA_API12
-        AA_NUM13
-        AA_API13
-        AA_AVG_NW
-        AA_AVG_W
-        AI_NUM11
-        AI_API11
-        AI_NUM12
-        AI_API12
-        AI_NUM13
-        AI_API13
-        AI_AVG_NW
-        AI_AVG_W
-        AS_NUM11
-        AS_API11
-        AS_NUM12
-        AS_API12
-        AS_NUM13
-        AS_API13
-        AS_AVG_NW
-        AS_AVG_W
-        FI_NUM11
-        FI_API11
-        FI_NUM12
-        FI_API12
-        FI_NUM13
-        FI_API13
-        FI_AVG_NW
-        FI_AVG_W
-        HI_NUM11
-        HI_API11
-        HI_NUM12
-        HI_API12
-        HI_NUM13
-        HI_API13
-        HI_AVG_NW
-        HI_AVG_W
-        PI_NUM11
-        PI_API11
-        PI_NUM12
-        PI_API12
-        PI_NUM13
-        PI_API13
-        PI_AVG_NW
-        PI_AVG_W
-        WH_NUM11
-        WH_API11
-        WH_NUM12
-        WH_API12
-        WH_NUM13
-        WH_API13
-        WH_AVG_NW
-        WH_AVG_W
-        MR_NUM11
-        MR_API11
-        MR_NUM12
-        MR_API12
-        MR_NUM13
-        MR_API13
-        MR_AVG_NW
-        MR_AVG_W
-        SD_NUM11
-        SD_API11
-        SD_NUM12
-        SD_API12
-        SD_NUM13
-        SD_API13
-        SD_AVG_NW
-        SD_AVG_W
-        EL_NUM11
-        EL_API11
-        EL_NUM12
-        EL_API12
-        EL_NUM13
-        EL_API13
-        EL_AVG_NW
-        EL_AVG_W
-        DI_NUM11
-        DI_API11
-        DI_NUM12
-        DI_API12
-        DI_NUM13
-        DI_API13
-        DI_AVG_NW
-        DI_AVG_W
-        IRG5
-    ;
-    set api_raw;
+proc sort data= api_output out= api_sort;
+    by descending api_mean;                       
 run;
 
-proc means data=work.api_analytic_file;
-    class dname;
-    var num12;
-    title 'Number of Students Included in the 2012 Growth API';
+
+
+title  "Highest ranked API schools ";
+                                   
+proc print data=  api_sort (obs=10);
 run;
+title; 
+
+
+
+
+
+
