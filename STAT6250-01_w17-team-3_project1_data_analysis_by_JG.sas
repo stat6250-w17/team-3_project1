@@ -21,3 +21,13 @@ relative file import path to the current directory, if using Windows;
 	%end;
 %mend;
 %setup;
+
+proc print data=work.api_analytic_file (obs=100) noobs;
+    title 'Title';
+    var dname sname;
+run;
+
+proc means data=work.api_analytic_file;
+    class dname;
+    var num12;
+    title 'Number of Students Included in the 2012 Growth API'
