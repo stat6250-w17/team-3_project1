@@ -13,7 +13,7 @@
 
 * Environmental Variables ;
 %let dataPrepFileName = STAT6250-01_w17-team-3_project1_data_preparation.sas;
-%let sasUEFilePrefix = proj1/team-3_project1;
+%let sasUEFilePrefix = team-3_project1;
 
 * load external file that generates analytic dataset "api_analytic_file" using
  a system path dependent on the host operating system, after setting the 
