@@ -57,7 +57,13 @@ title1 underlin=2 bcolor=bioy "Research Question: What are the enrollment numb"
 title2 underlin=2 bcolor=bioy "Rationale: Summary statistics for counties are "
     "directly correlated to funding dollars.  This is a useful statistic to tr"
     "ack.";
-footnote1 underlin=2 bcolor=bioy "footnote Message";
+footnote1 underlin=2 bcolor=bioy "The SAS step output addresses the question/o"
+    "bjective by dropping type, and statistic information, and outputting just"
+    " raw counts.";
+footnote2 underlin=2 bcolor=bioy "Additionally, we state the variable of inter"
+    "est is specifically 'num12', the number of students enrolled in 2012, and"
+    " classified our output by county name.";
+footnote3 underlin=2 bcolor=bioy " classified our output by county name.";
 proc sort data=work.api_analytic_file;
     by cname;
 run;
@@ -73,6 +79,8 @@ run;
 title1; 
 title2; 
 footnote1;
+footnote2;
+footnote3;
 
 *******************************************************************************
 *******************************************************************************
