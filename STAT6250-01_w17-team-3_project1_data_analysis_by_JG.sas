@@ -40,8 +40,8 @@ relative file import path to the current directory, if using Windows;
 *******************************************************************************
 *******************************************************************************
 
-Research Question: What are the enrolment numbers by county of students 
-participating in the Academic Performance Index survey?
+Research Question: What are the enrollment numbers by county of students 
+participating in the 2012 Academic Performance Index survey?
 
 Rationale: Summary statistics for counties are directly correlated to funding
 dollars.  This is a useful statistic to track.
@@ -51,20 +51,28 @@ means to gather and compile stats on enrolment numbers for 2012.  We
 classify by county.
 ;
 
+title1 underlin=2 bcolor=bioy "Research Question: What are the enrollment numb"
+    "ers by county of students participating in the 2012 Academic Performance "
+    "Index survey?";
+title2 underlin=2 bcolor=bioy "Rationale: Summary statistics for counties are "
+    "directly correlated to funding dollars.  This is a useful statistic to tr"
+    "ack.";
+footnote1 underlin=2 bcolor=bioy "footnote Message";
 proc sort data=work.api_analytic_file;
     by cname;
 run;
-
 proc means data=work.api_analytic_file noprint mean;
     var num12;
     class cname;
     output out=rrt (drop=_type_ _freq_ _stat_);
 run;
-
-title underlin=2 bcolor=bioy "Student Included in 2012 Survey by County";
-proc print data=rrt (firstobs=6 obs=30);
+proc print data=rrt (firstobs=6 obs=30) noobs label;
+    label num12='# Students Participated: 2012'
+          cname='County Name';
 run;
-title; 
+title1; 
+title2; 
+footnote1;
 
 *******************************************************************************
 *******************************************************************************
