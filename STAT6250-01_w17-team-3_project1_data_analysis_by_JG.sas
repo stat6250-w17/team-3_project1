@@ -72,7 +72,7 @@ proc means data=work.api_analytic_file noprint mean;
     class cname;
     output out=rrt (drop=_type_ _freq_ _stat_);
 run;
-proc print data=rrt (firstobs=6 obs=30) noobs label;
+proc print data=rrt (firstobs=6 obs=36) noobs label;
     label num12='# Students Participated: 2012'
           cname='County Name';
 run;
@@ -95,15 +95,30 @@ a central tendency, like an average.
 Methodology: Use the ever handy proc means with the median option.
 ;
 
-title underlin=1 bcolor=bioy "The Median value across data sets for 2011-13";
-proc means data=work.api_analytic_file median;
+title1 underlin=2 bcolor=bioy "Research Question: What are the middle values w"
+    "ith respect to enrolment across the years 2011-13, classified by school d"
+    "istrict?";
+title2 underlin=2 bcolor=bioy "Rationale: Looking at middle values as opposed "
+    "to averages is important when one doesn't want to let outliers influence";
+title3 underlin=2 bcolor=bioy " the high probability of finding a central tend"
+    "ency, like an average.";
+footnote1 underlin=2 bcolor=bioy "The output addresses the question/objective "
+    "by classifying on district name, and summarizing on counts of student enr"
+    "ollments across the years 2011-13.";
+proc means data=work.api_analytic_file noprint median;
     class dname;
     var num11 num12 num13;
-    output out=rrt (drop=_type_);
+    output out=rrt (drop=_type_ _freq_ _stat_);
 run;
 
-proc print data=rrt;
+proc print data=rrt (firstobs=6 obs=36) noobs label;
+    label dname='District Name' num11='Median 2011' num12='Median 2012' 
+          num13='Median 2013';
 run;
+title1;
+title2;
+title3;
+footnote1;
 
 *******************************************************************************
 *******************************************************************************
