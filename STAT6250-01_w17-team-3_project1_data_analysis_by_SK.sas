@@ -36,31 +36,37 @@
 
 *
 Research Question - What are the top ten districts having highest API score in 
-year 2012 ,2012 and 2013 ?
+year 2013 ?
 
 Rationale-This would help us determine which top 10 districts have good average
 API, so that new school and underperformers can follow their best practices.
 
 Methodology- Use PROC SORT by Dname to sort the district name in descending 
 order because we will be grouping the district name together for average API's
-for the district and it is a good practice to sort it first.Converted char 
-varaible to numeric for mean calculation.USed PROc means to calculate average
-of API's for 2011 grouped by district name.Used PROC SORT to sort the mean data
-descending.Used PROC print with OBS=10 to print top 10 district name with respe-
--ct to average API for 2011.
+for the district and it is a good practice to sort it first.Used PROC means to 
+calculate average of API's for 2013 grouped by district name.Used PROC SORT to
+sort the mean data descending. Used PROC print with OBS=10 to print top 10 dist
+rict name with respect to average API for 2013.
 ;
 
+title1 underlin =1 bcolor= bilg  "Research Question - What are the top ten dis"
+    "tricts having highest API score in year 2013 ?";
+title3 underlin =1 bcolor= bilg "Rationale-This would help us determine which "
+    "top 10 district have good average API, so that new school and underperfor"
+    "mers can follow their best practices.";
+title4 underlin =2 bcolor= azure "TOP 10 District by Average API in 2013";
+footnote1 bcolor=cornsilk "The SAS steps in the program sort the raw data by v"
+    "ariable DNAME before calculating average API scrore for each district and"
+    "dropping _TYPE_ from the output.";
+footnote2 bcolor=cornsilk "The output of mean is sorted by Average API";
+footnote4 bcolor=azure "We print the Top 10 Districts by Average API for 2013";  
+    
 proc sort data=api_analytic_file out=api_analytic_out1; /*Sorting by District*/
     by descending DNAME;
 run;
 
-data api_analytic_out2;         /*Changing CHAR to Numeric for API11 Variable*/
-    set api_analytic_out1;
-    new_API11 = API11*1;
-run;
-
-proc means data= api_analytic_out2 noprint mean;        /*Calculating Average*/
-    var new_API11;
+proc means data= api_analytic_out1 noprint mean;        /*Calculating Average*/
+    var API13;
     class DNAME;                                         /*grouped by Distict*/
     output 
     out = api_analytic_mean_DNAME (DROP = _TYPE_)
@@ -70,13 +76,18 @@ run;
 proc sort data= api_analytic_mean_DNAME out= api_analytic_mean_DNAME_sort;
     by descending api_mean_dname;                       /*Sort by Average API*/
 run;
-
-title underlin=2 bcolor=bilg " TOP 10 District API in CA";
                                    /*Printing top 10 District by Average APIs*/
-proc print data= api_analytic_mean_DNAME_sort (obs=10);
+proc print data= api_analytic_mean_DNAME_sort (obs=10) label;
+        label DNAME = 'District Name'
+        _FREQ_='Total number of Schools'
+        api_mean_dname='Average API of District';
 run;
-title; 
-
+title1;
+title3;
+title4; 
+footnote1;
+footnote2;
+footnote4;
 
 *
 Research Question -Which races have an average API below and above the mean of 
@@ -94,13 +105,14 @@ API's for each race grouped by county.
 
 
 title underlin=1 bcolor=bilg "Comparision of average API score for all races";
-proc means data=api_analytic_file mean ; /*grouped by county for all race*/
+proc means data=api_analytic_file mean noprint ; /*group by county for races*/
     class CNAME;
-    var API13 AA_API13 AI_API13 AS_API13 FI_API13
-    HI_API13 PI_API13 WH_API13;
+    var API13 AA_API13 AI_API13 AS_API13 FI_API13 HI_API13 PI_API13 WH_API13;
     output 
     out = api_analytic_mean (DROP = _TYPE_);
 run;
+
+proc print data=api_analytic_mean 
 
 *
 Research Question- What is the average API score in 2013 for funded charter non 
