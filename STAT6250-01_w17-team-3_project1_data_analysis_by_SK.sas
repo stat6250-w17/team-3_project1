@@ -108,16 +108,10 @@ title1 underlin=1 bcolor=bilg "Comparision of average API score for all races";
 
 proc means data=api_analytic_file noprint mean; /*group by county for races*/
     class CNAME;
-    var API13 AS_API13;
+    var API13 AS_API13 AA_API13;
     output 
     out = api_analytic_mean (DROP = _TYPE_ _FREQ_); 
 run;
-
-/*data api_analytic_meanonly;
-set api_analytic_mean;
-if _stat_ = 'MEAN';
-run;
-*/
 
 proc print data=api_analytic_mean (firstobs=2 )NOOBS label;
     WHERE _stat_ = 'MEAN';
@@ -125,6 +119,7 @@ proc print data=api_analytic_mean (firstobs=2 )NOOBS label;
     label CNAME = 'County Name'
     API13 = 'Average API of 2013'
     AS_API13 = 'Average API of Asians 2013'
+    AA_API13 = 'Average API of African American 2013'
     _STAT_ = 'Average APIs';
     BY _STAT_;
     
@@ -147,25 +142,22 @@ scores for 2013 grouped by type of charter schools.
 N= NON charter , Y = Charter not directly funded , D = Directly funded charter.
 ;
 
-proc sort data=new_api_analytic_file out=new_api_analytic_sort;
+proc sort data = api_analytic_file out = api_analytic_sort;
 by descending CHARTER;          /*sorting by type of schools as best practice*/
 RUN;
 
-data new_api_analytic_sort_fill;  /*creating numeric data, fill in blank data*/
-set new_api_analytic_sort;
-new_API13 = API13*1;
-if CHARTER='' then CHARTER='N';
-run;
-
-proc means data=new_api_analytic_sort_fill mean noprint; 
-    var new_API13;                                /*mean group by school type*/
+proc means data = api_analytic_sort mean noprint; 
+    var API13;                                /*mean group by school type*/
     class CHARTER;
     output 
-    out = new_api_analytic_sort_grpd (DROP = _TYPE_)
+    out = api_analytic_sort_grpd (DROP = _TYPE_)
     mean = mean_dname;
 run;
 
 title underlin=1 bcolor=bilg " Average API scores-By School type";
-proc print data= new_api_analytic_sort_grpd(rename=(mean_dname=Average) 
-rename=(_FREQ_=NumberOfSchools) rename=(CHARTER=School_Type));/*rename header*/
+proc print data= api_analytic_sort_grpd label noobs;
+    
+    label mean_dname = 'District Average API'
+          _freq_ = 'Number of Schools'
+          CHARTER = 'School Type';
 run;
