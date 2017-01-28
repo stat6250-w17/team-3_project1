@@ -82,7 +82,7 @@ proc print data= api_analytic_mean_DNAME_sort (obs=10) label;
         _FREQ_='Total number of Schools'
         api_mean_dname='Average API of District';
 run;
-title1;
+title1;                                        /*Closing titles and footnotes*/
 title3;
 title4; 
 footnote1;
@@ -120,7 +120,7 @@ proc means data=api_analytic_file noprint mean; /*group by county for races*/
 run;
 
 proc print data=api_analytic_mean (firstobs=2 )NOOBS label;
-    WHERE _stat_ = 'MEAN';
+    WHERE _stat_ = 'MEAN';   /*Print Avg. APIs by Race and Overall County API*/
     id CNAME;
     label CNAME = 'County Name'
     API13 = 'Average API of 2013'
@@ -131,7 +131,7 @@ proc print data=api_analytic_mean (firstobs=2 )NOOBS label;
     _STAT_ = 'Average APIs';
     BY _STAT_;  
 run; 
-title1;
+title1;                                        /*Closing titles and footnotes*/
 title3;
 title4;
 footnote1;
@@ -159,7 +159,7 @@ title3 underlin =1 bcolor= bilg "Rationale-This would help the state Governmen"
 title4 underlin =2 bcolor= azure "Y = Charter not directly funded";
 title5 underlin =2 bcolor= azure "D = Directly funded charter";
 footnote1 bcolor=cornsilk "The proc means steps in the program calculates the "
-    "average API for direectly Vs Not directly funded Charter schools in 2013";
+    "average API for directly Vs Not directly funded Charter schools in 2013";
 footnote3 bcolor=azure "Proc prints Average APIs for Charter schools by 2013";
 
 proc sort data = api_analytic_file out = api_analytic_sort;
@@ -179,7 +179,7 @@ proc print data= api_analytic_sort_grpd (firstobs = 2)label noobs;
           _freq_ = 'Number of Schools'
           CHARTER = 'School Type';
 run;
-title1;
+title1;                                        /*Closing titles and footnotes*/
 title3;
 title4;
 title5;
