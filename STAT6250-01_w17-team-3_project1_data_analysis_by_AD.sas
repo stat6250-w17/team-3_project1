@@ -50,7 +50,7 @@ proc sort data=api_analytic_file out=api_AA;
     by descending DNAME;
 run;
 
-title  " Effect of African-American kids in API score";
+title  " Effect of African-American kids in API score ";
 proc means data= api_AA ;        
     var API11 API12 API13 AA_NUM11 AA_NUM12 AA_NUM13 ;
     class DNAME;                                         
