@@ -13,7 +13,7 @@
 
 * Environmental Variables ;
 %let dataPrepFileName = STAT6250-01_w17-team-3_project1_data_preparation.sas;
-%let sasUEFilePrefix = proj1/team-3_project1;
+%let sasUEFilePrefix = team-3_project1;
 
 * load external file that generates analytic dataset "api_analytic_file" using
  a system path dependent on the host operating system, after setting the 
@@ -92,23 +92,12 @@ the current variables were of CHAR type.Use PROC means to calculate average
 API's for each race grouped by county. 
 ;
 
-data new_api_analytic_file;        /*Creating new dataset with numeric values*/
- set api_analytic_file;
-    new_API13 = API13*1;
-    new_AA_API13 = AA_API13*1;
-    new_AI_API13 = AI_API13*1;
-    new_AS_API13= AS_API13*1;
-    new_FI_API13 = FI_API13*1;
-    new_HI_API13 = HI_API13*1;
-    new_PI_API13 = PI_API13*1;
-    new_WH_API13 = WH_API13*1;
-run;
 
 title underlin=1 bcolor=bilg "Comparision of average API score for all races";
-proc means data=new_api_analytic_file mean ; /*grouped by county for all race*/
+proc means data=api_analytic_file mean ; /*grouped by county for all race*/
     class CNAME;
-    var new_API13 new_AA_API13 new_AI_API13 new_AS_API13 new_FI_API13
-    new_HI_API13 new_PI_API13 new_WH_API13;
+    var API13 AA_API13 AI_API13 AS_API13 FI_API13
+    HI_API13 PI_API13 WH_API13;
     output 
     out = api_analytic_mean (DROP = _TYPE_);
 run;
