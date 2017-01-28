@@ -104,15 +104,33 @@ API's for each race grouped by county.
 ;
 
 
-title underlin=1 bcolor=bilg "Comparision of average API score for all races";
-proc means data=api_analytic_file mean noprint ; /*group by county for races*/
+title1 underlin=1 bcolor=bilg "Comparision of average API score for all races";
+
+proc means data=api_analytic_file noprint mean; /*group by county for races*/
     class CNAME;
-    var API13 AA_API13 AI_API13 AS_API13 FI_API13 HI_API13 PI_API13 WH_API13;
+    var API13 AS_API13;
     output 
-    out = api_analytic_mean (DROP = _TYPE_);
+    out = api_analytic_mean (DROP = _TYPE_ _FREQ_); 
 run;
 
-proc print data=api_analytic_mean 
+/*data api_analytic_meanonly;
+set api_analytic_mean;
+if _stat_ = 'MEAN';
+run;
+*/
+
+proc print data=api_analytic_mean (firstobs=2 )NOOBS label;
+    WHERE _stat_ = 'MEAN';
+    id CNAME;
+    label CNAME = 'County Name'
+    API13 = 'Average API of 2013'
+    AS_API13 = 'Average API of Asians 2013'
+    _STAT_ = 'Average APIs';
+    BY _STAT_;
+    
+run; 
+
+title1;
 
 *
 Research Question- What is the average API score in 2013 for funded charter non 
