@@ -107,7 +107,7 @@ based on the type of population of the school instead of using generic methodolo
 
 title4 underlin =2 bcolor=aquamarine "Effect of Socioeconomically disadvantaged students  in API score" ; 
  
-footnote1 bcolor=bib "This sas program uses a proc to produce the average api
+footnote1 bcolor=aquamarine "This sas program uses a proc to produce the average api
  of the Socioeconomically disadvantaged students ";
 
 proc means data= api_AA noprint mean;        
@@ -126,6 +126,7 @@ proc print data=api_analytic_mean (obs=10) ;
     API13 = 'Average API of 2013'
     _STAT_ = 'Average APIs';
     BY _STAT_;  
+    run;
 title1;                                        
 title3;
 title4;
