@@ -39,16 +39,11 @@ relative file import path to the current directory, if using Windows;
 
 *******************************************************************************
 *******************************************************************************
-
-Research Question: What are the enrollment numbers by county of students 
-participating in the 2012 Academic Performance Index survey?
-
-Rationale: Summary statistics for counties are directly correlated to funding
-dollars.  This is a useful statistic to track.
-
-Methodology: Using proc sort to sort the data by county, we then use proc
-means to gather and compile stats on enrolment numbers for 2012.  We
-classify by county.
+Methodology: We use proc means to gather and compile stats on enrolment numbers
+for 2012.  We classify by county.  Then we output rrt data set, and use label
+keyword/statement to make human friendly cryptic variables names cname & num12.
+We specify the options noobs to rid outselves of the observation count field
+from being printed.
 ;
 
 title1 underlin=2 bcolor=bioy "Research Question: What are the enrollment numb"
@@ -65,9 +60,6 @@ footnote2 underlin=2 bcolor=bioy "Additionally, we state the variable of inter"
     "est is specifically 'num12', the number of students enrolled in 2012, and"
     " classified our output by county name.";
 footnote3 underlin=2 bcolor=bioy " classified our output by county name.";
-proc sort data=work.api_analytic_file;
-    by cname;
-run;
 proc means data=work.api_analytic_file maxdec=0 noprint mean;
     var num12;
     class cname;
@@ -86,15 +78,13 @@ footnote3;
 
 *******************************************************************************
 *******************************************************************************
-
-Research Question: What are the middle values with respect to enrolment
-across the years 2011-13, classified by school district?
-
-Rationale: Looking at middle values as opposed to averages is important when
-one doesn't want to let outliers influence the high probability of finding
-a central tendency, like an average.
-
-Methodology: Use the ever handy proc means with the median option.
+Methodology: Use the proc means with the median option.  We want the median
+for all students recorded in years 2011, 2012, and 2013 by district.  Therefore
+we classify by dist name, then specify the variables of interest, total number-
+s enrolled for the three years, num11, num12, and num13.  We output data type
+rrt without type, freq, and stat info.  Then we print this data object, conver-
+ting cryptic variable name with label keyword/statement in the proc print
+procedure.
 ;
 
 title1 underlin=2 bcolor=bioy "Research Question: What are the middle values w"
@@ -126,18 +116,11 @@ footnote1;
 
 *******************************************************************************
 *******************************************************************************
-
-Research Question: What are the 2012 quartiles of socioeconomically 
-disadvantaged students included in the 2012 Growth API, by District?
-
-Rationale: When talking about groups it is important to know what 
-quartile breakdown is all about.  Most specifically: benchmarking.  Setting up
-benchmarks in the plannaing and subsequent resolving of poverty issues is often
-super important in order to gauge success or failure of social scholastic
-programs.
-
 Methodology: Using the proc means to run analysis on the disadvantaged students
-classified by district.
+classified by district.  We then specify the variable of interest, sd_num12.
+sd_num12 is the number of disadvantaged students in 2012.  We then output
+a data object called pctls, dropping the type and frequency counts in lieu of
+specified quartiles.
 ;
 
 title1 underlin=1 bcolor=bioy "Research Question: What are the 2012 quartiles "
