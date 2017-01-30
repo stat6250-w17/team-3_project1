@@ -39,6 +39,11 @@ relative file import path to the current directory, if using Windows;
 
 *******************************************************************************
 *******************************************************************************
+Methodology: We use proc means to gather and compile stats on enrolment numbers
+for 2012.  We classify by county.  Then we output rrt data set, and use label
+keyword/statement to make human friendly cryptic variables names cname & num12.
+We specify the options noobs to rid outselves of the observation count field
+from being printed.
 ;
 
 title1 underlin=2 bcolor=bioy "Research Question: What are the enrollment numb"
@@ -73,6 +78,13 @@ footnote3;
 
 *******************************************************************************
 *******************************************************************************
+Methodology: Use the proc means with the median option.  We want the median
+for all students recorded in years 2011, 2012, and 2013 by district.  Therefore
+we classify by dist name, then specify the variables of interest, total number-
+s enrolled for the three years, num11, num12, and num13.  We output data type
+rrt without type, freq, and stat info.  Then we print this data object, conver-
+ting cryptic variable name with label keyword/statement in the proc print
+procedure.
 ;
 
 title1 underlin=2 bcolor=bioy "Research Question: What are the middle values w"
@@ -104,6 +116,11 @@ footnote1;
 
 *******************************************************************************
 *******************************************************************************
+Methodology: Using the proc means to run analysis on the disadvantaged students
+classified by district.  We then specify the variable of interest, sd_num12.
+sd_num12 is the number of disadvantaged students in 2012.  We then output
+a data object called pctls, dropping the type and frequency counts in lieu of
+specified quartiles.
 ;
 
 title1 underlin=1 bcolor=bioy "Research Question: What are the 2012 quartiles "
