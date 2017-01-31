@@ -4,22 +4,15 @@
 *******************************************************************************;
 ** 
  Dataset Name: Academic Performance Index(API)_analytic_file created in external
- file STAT6250-01_w17-team-3_project1_data_preparation.sas, which is assumed to 
- be in the same directory as this file
+ file STAT6250-01_w17-team-3_project1_data_preparation.sas.  Place this file
+ in same directory as this file.
+;
 
-* Environmental setup;
-
-* set relative file import path to current directory (using standard SAS trick);
-
-* Environmental Variables ;
 %let dataPrepFileName = STAT6250-01_w17-team-3_project1_data_preparation.sas;
 %let sasUEFilePrefix = team-3_project1;
 
 
 
-* load external file that generates analytic dataset FRPM1516_analytic_file
-using a system path dependent on the host operating system, after setting the
-relative file import path to the current directory, if using Windows;
 %macro setup;
 %if
 	&SYSSCP. = WIN
