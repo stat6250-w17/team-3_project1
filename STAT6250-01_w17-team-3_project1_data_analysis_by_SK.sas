@@ -135,11 +135,11 @@ proc means data = api_analytic_file mean noprint;
     var API13;                                /*mean group by school type*/
     class CHARTER;
     output 
-    out = api_analytic_sort_grpd (DROP = _TYPE_)
+    out = api_analytic_file_grpd (DROP = _TYPE_)
     mean = mean_dname;
 run;
 
-proc print data= api_analytic_sort_grpd (firstobs = 2)label noobs;
+proc print data= api_analytic_file_grpd (firstobs = 2)label noobs;
     label mean_dname = 'District Average API'
           _freq_ = 'Number of Schools'
           CHARTER = 'School Type';
