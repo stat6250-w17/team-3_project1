@@ -35,18 +35,9 @@
 %setup;
 
 *
-Research Question - What are the top ten districts having highest API score in 
-year 2013 ?
-
-Rationale-This would help us determine which top 10 districts have good average
-API, so that new school and underperformers can follow their best practices.
-
-Methodology- Use PROC SORT by Dname to sort the district name in descending 
-order because we will be grouping the district name together for average API's
-for the district and it is a good practice to sort it first.Used PROC means to 
-calculate average of API's for 2013 grouped by district name.Used PROC SORT to
-sort the mean data descending. Used PROC print with OBS=10 to print top 10 dist
-rict name with respect to average API for 2013.
+Methodology-Used PROC means to calculate average of API's for 2013 grouped by
+district name.Used PROC SORT to sort the mean data descending. Used PROC print
+with OBS=10 to print top 10 district name with respect to average API for 2013.
 ;
 
 title1 underlin =1 bcolor= bilg  "Research Question - What are the top ten dis"
@@ -55,17 +46,12 @@ title3 underlin =1 bcolor= bilg "Rationale-This would help us determine which "
     "top 10 district have good average API, so that new school and underperfor"
     "mers can follow their best practices.";
 title4 underlin =2 bcolor= azure "TOP 10 District by Average API in 2013";
-footnote1 bcolor=cornsilk "The SAS steps in the program sort the raw data by v"
-    "ariable DNAME before calculating average API scrore for each district and"
-    "dropping _TYPE_ from the output.";
+footnote1 bcolor=cornsilk "The SAS steps in the program is calculating average" 
+    "API scrore for each district and dropping _TYPE_ from the output.";
 footnote2 bcolor=cornsilk "The output of mean is sorted by Average API";
 footnote4 bcolor=azure "We print the Top 10 Districts by Average API for 2013";  
-    
-proc sort data=api_analytic_file out=api_analytic_out1; /*Sorting by District*/
-    by descending DNAME;
-run;
 
-proc means data= api_analytic_out1 noprint mean;        /*Calculating Average*/
+proc means data= api_analytic_file noprint mean;        /*Calculating Average*/
     var API13;
     class DNAME;                                         /*grouped by Distict*/
     output 
@@ -90,14 +76,6 @@ footnote2;
 footnote4;
 
 *
-Research Question -What are average API scores of major races of students as 
-compared to the average API of the overall students of county for 2013. 
-
-Rationale-This would help idetify the races that score API below the average  
-of overall API.In other words races that are underperformers and are affecting
-the API score needs to get more attention and resourses in order for them
-to meet good API standards.
-
 Methodology-Used PROC means to calculate average for major races for each 
 county students. Used Proc print to print the API results by county for 
 comparisons. 
@@ -138,16 +116,7 @@ footnote1;
 footnote3;
 
 *
-Research Question- What is the average API score in 2013 for charter schools 
-that are directly funded as compared to charter schools that are not direclty
-funded?
-Rationale-This would help us determine the performance of charter schools whi-
--ch are funded directly as compared to charter schools which are not directly
-funded. We compare their average API scores for 2013. This will help state gov-
--erments to make intellegent decisions on funding the charter schools. 
-
-Methodology-Use PROC Sort by Charter as best practice to sort the data according
-to the type of school. Used PROC means to look at average API scores for 2013 
+Methodology-Used PROC means to look at average API scores for 2013 
 grouped by type of charter schools. 
 Y = Charter not directly funded , D = Directly funded charter.
 ;
@@ -160,21 +129,17 @@ title4 underlin =2 bcolor= azure "Y = Charter not directly funded";
 title5 underlin =2 bcolor= azure "D = Directly funded charter";
 footnote1 bcolor=cornsilk "The proc means steps in the program calculates the "
     "average API for directly Vs Not directly funded Charter schools in 2013";
-footnote3 bcolor=azure "Proc prints Average APIs for Charter schools by 2013";
+footnote3 bcolor=azure "Proc prints Average APIs for Charter schools for 2013";
 
-proc sort data = api_analytic_file out = api_analytic_sort;
-by descending CHARTER;          /*sorting by type of schools as best practice*/
-RUN;
-
-proc means data = api_analytic_sort mean noprint; 
+proc means data = api_analytic_file mean noprint; 
     var API13;                                /*mean group by school type*/
     class CHARTER;
     output 
-    out = api_analytic_sort_grpd (DROP = _TYPE_)
+    out = api_analytic_file_grpd (DROP = _TYPE_)
     mean = mean_dname;
 run;
 
-proc print data= api_analytic_sort_grpd (firstobs = 2)label noobs;
+proc print data= api_analytic_file_grpd (firstobs = 2)label noobs;
     label mean_dname = 'District Average API'
           _freq_ = 'Number of Schools'
           CHARTER = 'School Type';
