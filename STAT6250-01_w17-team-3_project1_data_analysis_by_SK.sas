@@ -34,11 +34,7 @@
 %mend;
 %setup;
 
-*
-Methodology-Used PROC means to calculate average of API's for 2013 grouped by
-district name.Used PROC SORT to sort the mean data descending. Used PROC print
-with OBS=10 to print top 10 district name with respect to average API for 2013.
-;
+
 
 title1 underlin =1 bcolor= bilg  "Research Question - What are the top ten dis"
     "tricts having highest API score in year 2013 ?";
@@ -50,6 +46,12 @@ footnote1 bcolor=cornsilk "The SAS steps in the program is calculating average"
     "API scrore for each district and dropping _TYPE_ from the output.";
 footnote2 bcolor=cornsilk "The output of mean is sorted by Average API";
 footnote4 bcolor=azure "We print the Top 10 Districts by Average API for 2013";  
+
+*
+Methodology-Used PROC means to calculate average of API's for 2013 grouped by
+district name.Used PROC SORT to sort the mean data descending. Used PROC print
+with OBS=10 to print top 10 district name with respect to average API for 2013.
+;
 
 proc means data= api_analytic_file noprint mean;        /*Calculating Average*/
     var API13;
@@ -68,18 +70,10 @@ proc print data= api_analytic_mean_DNAME_sort (obs=10) label;
         _FREQ_='Total number of Schools'
         api_mean_dname='Average API of District';
 run;
-title1;                                        /*Closing titles and footnotes*/
-title3;
-title4; 
-footnote1;
-footnote2;
-footnote4;
+title;                                        /*Closing titles and footnotes*/
+footnote;
 
-*
-Methodology-Used PROC means to calculate average for major races for each 
-county students. Used Proc print to print the API results by county for 
-comparisons. 
-;
+
 
 title1 underlin =1 bcolor= bilg  "Research Question -What are the average APIs"
     " of major races for each county as compared with Average API for 2013";
@@ -89,6 +83,12 @@ title4 underlin =2 bcolor= azure "Average API by Race for each County in 2013";
 footnote1 bcolor=cornsilk "The SAS steps in the program calculates the average"
     " API of major races in each county in 2013";
 footnote3 bcolor=azure "We print APIs for major races in each County for 2013";  
+
+*
+Methodology-Used PROC means to calculate average for major races for each 
+county students. Used Proc print to print the API results by county for 
+comparisons. 
+;
 
 proc means data=api_analytic_file noprint mean; /*group by county for races*/
     class CNAME;
@@ -109,27 +109,25 @@ proc print data=api_analytic_mean (firstobs=2 )NOOBS label;
     _STAT_ = 'Average APIs';
     BY _STAT_;  
 run; 
-title1;                                        /*Closing titles and footnotes*/
-title3;
-title4;
-footnote1;
-footnote3;
+title;                                        /*Closing titles and footnotes*/
+footnote;
 
-*
-Methodology-Used PROC means to look at average API scores for 2013 
-grouped by type of charter schools. 
-Y = Charter not directly funded , D = Directly funded charter.
-;
+
 
 title1 underlin =1 bcolor= bilg  "Research Question -What are the average APIs"
     " of Directly funded Charter Schools Vs Non-Directly Funded Charter";
 title3 underlin =1 bcolor= bilg "Rationale-This would help the state Governmen"
     "t look at API perforamce of Charter Schools and allocate proper funds";
 title4 underlin =2 bcolor= azure "Y = Charter not directly funded";
-title5 underlin =2 bcolor= azure "D = Directly funded charter";
+title5 underlin =2 bcolor= azure "D = Charter Directly funded ";
 footnote1 bcolor=cornsilk "The proc means steps in the program calculates the "
     "average API for directly Vs Not directly funded Charter schools in 2013";
 footnote3 bcolor=azure "Proc prints Average APIs for Charter schools for 2013";
+*
+Methodology-Used PROC means to look at average API scores for 2013 
+grouped by type of charter schools. 
+Y = Charter not directly funded , D = Charter Directly funded .
+;
 
 proc means data = api_analytic_file mean noprint; 
     var API13;                                /*mean group by school type*/
@@ -144,9 +142,5 @@ proc print data= api_analytic_file_grpd (firstobs = 2)label noobs;
           _freq_ = 'Number of Schools'
           CHARTER = 'School Type';
 run;
-title1;                                        /*Closing titles and footnotes*/
-title3;
-title4;
-title5;
-footnote1;
-footnote3;
+title;                                        /*Closing titles and footnotes*/
+footnote;
