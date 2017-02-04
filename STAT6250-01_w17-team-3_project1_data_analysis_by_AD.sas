@@ -46,7 +46,7 @@ title1 underlin =1 bcolor=aquamarine "Research Question - How does the
 
 title2 underlin =1 bcolor=aquamarine "Rationale- This analysis can be applied to any race by 
 replace the variable by that race. This would help us to identify if increase or 
-decrease of particular race will affect the API score ."
+decrease of particular race will affect the API score .";
 
 title3 underlin =2 bcolor=aquamarine "Effect of African-American students  in API score" ; 
  
