@@ -74,7 +74,6 @@ title;                                        /*Closing titles and footnotes*/
 footnote;
 
 
-
 title1 underlin =1 bcolor= bilg  "Research Question -What are the average APIs"
     " of major races for each county as compared with Average API for 2013";
 title3 underlin =1 bcolor= bilg "Rationale-This would help identify the races "
