@@ -13,7 +13,7 @@
 
 * Environmental Variables ;
 %let dataPrepFileName = STAT6250-01_w17-team-3_project1_data_preparation.sas;
-%let sasUEFilePrefix = proj1/team-3_project1;
+%let sasUEFilePrefix = team-3_project1;
 
 * load external file that generates analytic dataset "api_analytic_file" using
  a system path dependent on the host operating system, after setting the 
@@ -34,157 +34,119 @@
 %mend;
 %setup;
 
-*
-Research Question - How does the increase/decrease of African-American kids
-affect the API score of the school ?
-
-Rationale- This analysis can be applied to any race by replace the variable by that
-race. This would help us to identify if increase or decrease of particular race 
-will affect the API score .
-
-Methodology - This is achieved by using PROC MEAN which calculated the  mean,
-sd, maximum ,minimum score of a data used based on classification district name using 
-variables of API Score and number of African-American kids in the school;
+*Methodology - The sas code constructs Mean using Proc Mean for three years of 
+AA_API data.I used noprint mean to avoid mean data to get printed in the screen.
+I also filtered the output from this command to remove the _DROP_FREQ_
+In the proc print the obs fields were removed using NOOBS option and  label
+was used to customize the output;
 
 
-title1 underlin =1  bcolor= aquamarine "Research Question - How does the increase/decrease
-of African-American kids affect the API score of the school ?";
+title1 underlin =1 bcolor=aquamarine "Research Question - How does the 
+         increase or decrease of African-American students affect the API score of the school ?";
 
-title3 underlin =1 bcolor= aquamarine "Rationale- This analysis can be applied to any race by 
-replace the variable by that race. This would help us to identify if increase or decrease of particular race 
-will affect the API score .";
+title2 underlin =1 bcolor=aquamarine "Rationale- This analysis can be applied to any race by 
+replace the variable by that race. This would help us to identify if increase or 
+decrease of particular race will affect the API score ."
 
-
-title4 underlin =2 bcolor= aquamarine "Effect of African-American kids in API score" ; 
-
-footnote1 bcolor=aquamarine "This sas program uses a proc to produce the average api
-of the African-American students ";
-
-
-proc sort data=api_analytic_file out=api_AA; 
-    by descending DNAME;
-run;
-
-proc means data= api_AA noprint mean;        
-    var API11 API12 API13 AA_NUM11 AA_NUM12 AA_NUM13   ;
-    class DNAME;         
-    output 
-    out = api_analytic_mean_DNAME (DROP = _TYPE_)
-    mean = api_mean_dname;
-run;
-
-proc sort data= api_analytic_mean_DNAME out= api_analytic_mean_DNAME_sort;
-    by descending api_mean_dname;                       
-run;
-                                
-proc print data= api_analytic_mean_DNAME_sort (obs=10) label;
-        label DNAME = 'District Name'
-        _FREQ_='Total number of Schools'
-        api_mean_dname='Average API of District';
-run;
-title1;                                        
-title3;
-title4;
-footnote1;
-
-*
-Research Question - How does the increase/decrease of Socioeconomically 
-disadvantaged students affect the API score of the school ?
+title3 underlin =2 bcolor=aquamarine "Effect of African-American students  in API score" ; 
  
-Rationale- This would help to see if the rating system should be modified based on the
-type of population of the school instead of using generic methodology for all schools. .
+footnote1 bcolor=aquamarine "This sas program uses a proc mean and proc print to produce
+ the average api of the AmericanAfrican students grouped by county name";
 
-Methodology - This is achieved by using PROC MEAN which calculated the  mean,
-sd, maximum ,minimum score of a data used based on classification district name using 
-variables of API Score and number of Socioeconomically 
-disadvantaged kids in the school ;
-
-title1 underlin =1 bcolor=aquamarine "Research Question - How does the increase/decrease of Socioeconomically 
-disadvantaged students affect the API score of the school ?";
-
-title3 underlin =1 bcolor=aquamarine "Rationale- This would help to see if the rating system should be modified
-based on the type of population of the school instead of using generic methodology for all schools.";
-
-title4 underlin =2 bcolor=aquamarine "Effect of Socioeconomically disadvantaged students  in API score" ; 
- 
-footnote1 bcolor=aquamarine "This sas program uses a proc to produce the average api
- of the Socioeconomically disadvantaged students ";
-
-proc means data= api_AA noprint mean;        
-    var API11 API12 API13 SD_NUM11 SD_NUM12 SD_NUM13 ;
-    class DNAME;    
+proc means data=api_analytic_file noprint mean; 
+    class CNAME;
+    var  AA_API13 AA_API12 AA_API11;
     output 
-    out = api_analytic_mean (DROP = _TYPE_ _FREQ_);
+    out =  AA_MEAN_OUTPUT (DROP = _TYPE_ _FREQ_ ); 
 run;
 
-proc print data=api_analytic_mean (obs=10) ;
-    WHERE _stat_ = 'MEAN';
-    id DNAME;
-    label DNAME = 'District Name'
-    API11 = 'Average API of 2011'
-    API12 = 'Average API of 2012'
-    API13 = 'Average API of 2013'
+proc print data=AA_MEAN_OUTPUT (obs = 10) NOOBS label ;
+    WHERE _stat_ = 'MEAN' and AA_API13 is not null and CNAME is not null;   
+    id CNAME;
+    label CNAME = 'County Name'
+    AA_API13 = 'Average API of African American 2013'
+    AA_API12 = 'Average API of African American 2012'
+    AA_API11 = 'Average API of African American 2011'
     _STAT_ = 'Average APIs';
     BY _STAT_;  
-    run;
-title1;                                        
-title3;
-title4;
-footnote1;
+run; 
+title;                                       
+footnote;
+
+*Methodology - The sas code constructs Mean using Proc Mean for three years of 
+SD_API data.I used noprint mean to avoid mean data to get printed in the screen.
+I also filtered the output from this command to remove the _DROP_FREQ_
+In the proc print the obs fields were removed using NOOBS option and  label
+was used to customize the output;
 
 
+title1 underlin =1 bcolor=aquamarine "Research Question - How does the increase
+  or decrease of Socioeconomically disadvantaged students affect the API score 
+  of the school ?";
 
-*Research Question -  What factors have contributed to increase of API of the school ?
+title2 underlin =1 bcolor=aquamarine "Rationale- This would help to see if the
+ rating system should be modified based on the type of population of the school
+ instead of using generic methodology for all schools.";
 
-Rationale - This would help new schools to know what has worked so they can accomplish the same 
-result using similar modelling of school.
+title3 underlin =2 bcolor=aquamarine "Effect of Socioeconomically disadvantaged
+ students in API score" ; 
+ 
+footnote1 bcolor=aquamarine "This sas program uses a proc mean to produce the average
+ api of the Socioeconomically disadvantaged students grouped by county name";
 
-Methodology- This is achieved by creating 2 data sets.One data set sorts school by API
-the second one sorts school by district and then merging the two data sets;
+proc means data=api_analytic_file noprint mean; 
+    class CNAME;
+    var  SD_NUM11 SD_NUM12 SD_NUM13;
+    output 
+    out =  SD_MEAN_OUTPUT (DROP = _TYPE_ _FREQ_ ); 
+run;
 
-title1 underlin =1  bcolor= aquamarine "Research Question -  What factors have contributed to
- increase of API of the school ?";
+proc print data=SD_MEAN_OUTPUT (obs = 10) NOOBS label ;
+    WHERE _stat_ = 'MEAN' and (SD_NUM11 is not null or SD_NUM12 is
+    not null or SD_NUM13 is not null) and CNAME is not null;   
+    id CNAME;
+    label CNAME = 'County Name'
+    SD_NUM11 = 'Average API of SocioEconomics in 2013'
+    SD_NUM12 = 'Average API of SocioEconomics in 2013'
+    SD_NUM13 = 'Average API of SocioEconomics in 2013'
+    _STAT_ = 'Average APIs';
+    BY _STAT_;  
+run; 
+title;                                        
+footnote;
 
-title3 underlin =1 bcolor= aquamarine "Rationale - This would help new schools to know what has
-worked so they can accomplish the same result using similar modelling of school.";
+*Methodology : This sas code uses proc means using API of 2013.Then the output
+data is sorted using proc sort based on mean. Then the top 10 schools are printed 
+to the output;
+
+title1 underlin =1  bcolor= aquamarine "Research Question - What factors have 
+ contributed to increase of API of the school ?";
+
+title2 underlin =1 bcolor= aquamarine "Rationale - This would help new schools
+ to know what has worked so they can accomplish the same result using similar 
+ modelling of school.";
 
 
-title4 underlin =2 bcolor= aquamarine "Highest ranked API schools" ; 
+title3 underlin =2 bcolor= aquamarine "Highest ranked API schools" ; 
 
-footnote1 bcolor=aquamarine "This sas program uses a proc to produce the average api
- of the Top 10 schools ";
+footnote1 bcolor=aquamarine "This sas program uses a proc mean and sort to
+ produce the average api of the Top 10 schools ";
 
-
-proc sort data=api_analytic_file out=api_input; 
-    by descending DNAME;
-
-
-proc means data= api_input noprint mean;        
+proc means data= api_analytic_file noprint mean;        
     var  API13;
     class DNAME;                                        
     output 
-    out = api_output 
+    out = api_output (DROP = _TYPE_ _FREQ_ )
     mean = api_mean;
 run;
 
 proc sort data= api_output out= api_sort;
     by descending api_mean;                       
 run;
-
-
                                    
 proc print data=  api_sort (obs=10);
 run;
 
-title1;                                        
-title3;
-title4;
-footnote1;
-
-
-
-
-
-
-
+title;
+footnote;
 
