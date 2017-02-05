@@ -27,8 +27,8 @@ composite key, field 1 known as: CDS.
 
 * Setting up the Environmental Variable. ;
 %let inputDatasetURL =
-  /* https://github.com/stat6250/team-3_project1/blob/master/14avgtx.xls?raw=true */
-  http://filebin.ca/39hWjpiY6HZ5/14avgtx.xls
+  https://github.com/stat6250/team-3_project1/blob/master/14avgtx.xls?raw=true
+  /*http://filebin.ca/39hWjpiY6HZ5/14avgtx.xls*/
 ;
 
 * Loading raw datafile via Internet;
