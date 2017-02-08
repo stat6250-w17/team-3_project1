@@ -2,7 +2,7 @@
 **************** 80-character banner for column width reference ***************;
 * (set window width to banner width to calibrate line length to 80 characters *;
 *******************************************************************************;
-** 
+** *IL: be careful for unnecessary comment characters;
  Dataset Name: Academic Performance Index(API)_analytic_file created in external
  file STAT6250-01_w17-team-3_project1_data_preparation.sas.  Place this file
  in same directory as this file.
@@ -15,16 +15,16 @@
 
 %macro setup;
 %if
-	&SYSSCP. = WIN
+    &SYSSCP. = WIN
 %then
-	%do;
-		X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";			
-		%include ".\&dataPrepFileName.";
-	%end;
+    %do;
+        X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";           
+        %include ".\&dataPrepFileName.";
+    %end;
 %else
-	%do;
-		%include "~/&sasUEFilePrefix./&dataPrepFileName.";
-	%end;
+    %do;
+        %include "~/&sasUEFilePrefix./&dataPrepFileName.";
+    %end;
 %mend;
 %setup;
 
@@ -32,7 +32,7 @@
 
 *******************************************************************************
 ******************************************************************************;
-
+* IL: consider not wrappting string literals, which creates maintenance issues;
 title1 underlin=2 bcolor=lightgreen "Research Question: What are the enrollment numb"
     "ers by county of students participating in the 2012 Academic Performance "
     "Index survey?";
@@ -60,6 +60,8 @@ run;
 title; 
 footnote;
 
+*IL: consider moving methodology between titles/footnotes and SAS steps to
+     creae a research narrative;
 *
 Methodology: We use proc means to gather and compile stats on enrolment numbers
 for 2012.  We classify by county.  Then we output rrt data set, and use label
