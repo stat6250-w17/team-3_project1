@@ -21,21 +21,21 @@
   
 %macro setup;
 %if
-	&SYSSCP. = WIN
+    &SYSSCP. = WIN
 %then
-	%do;
-		X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";			
-		%include ".\&dataPrepFileName.";
-	%end;
+    %do;
+        X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";           
+        %include ".\&dataPrepFileName.";
+    %end;
 %else
-	%do;
-		%include "~/&sasUEFilePrefix./&dataPrepFileName.";
-	%end;
+    %do;
+        %include "~/&sasUEFilePrefix./&dataPrepFileName.";
+    %end;
 %mend;
 %setup;
 
 
-
+* IL: it's okay to not wrap the literal strings;
 title1 underlin =1 bcolor= bilg  "Research Question - What are the top ten dis"
     "tricts having highest API score in year 2013 ?";
 title3 underlin =1 bcolor= bilg "Rationale-This would help us determine which "
@@ -96,6 +96,7 @@ proc means data=api_analytic_file noprint mean; /*group by county for races*/
     out = api_analytic_mean (DROP = _TYPE_ _FREQ_); 
 run;
 
+* IL: be consistent with case with noobs, where, and by;
 proc print data=api_analytic_mean (firstobs=2 )NOOBS label;
     WHERE _stat_ = 'MEAN';   /*Print Avg. APIs by Race and Overall County API*/
     id CNAME;

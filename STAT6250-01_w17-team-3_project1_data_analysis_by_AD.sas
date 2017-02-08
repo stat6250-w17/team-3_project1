@@ -22,16 +22,16 @@
   
 %macro setup;
 %if
-	&SYSSCP. = WIN
+    &SYSSCP. = WIN
 %then
-	%do;
-		X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";			
-		%include ".\&dataPrepFileName.";
-	%end;
+    %do;
+        X "cd ""%substr(%sysget(SAS_EXECFILEPATH),1,%eval(%length(%sysget(SAS_EXECFILEPATH))-%length(%sysget(SAS_EXECFILENAME))))""";           
+        %include ".\&dataPrepFileName.";
+    %end;
 %else
-	%do;
-		%include "~/&sasUEFilePrefix./&dataPrepFileName.";
-	%end;
+    %do;
+        %include "~/&sasUEFilePrefix./&dataPrepFileName.";
+    %end;
 %mend;
 %setup;
 
@@ -41,9 +41,10 @@ I also filtered the output from this command to remove the _DROP_FREQ_
 In the proc print the obs fields were removed using NOOBS option and  label
 was used to customize the output;
 
-
-title1 underlin =1 bcolor=aquamarine "Research Question - How does the 
-         increase or decrease of African-American students affect the API score of the school ?";
+* IL: it's okay to not line wrap literals;
+title1 underlin =1 bcolor=aquamarine
+"Research Question - How does the increase or decrease of African-American students affect the API score of the school ?"
+;
 
 title2 underlin =1 bcolor=aquamarine "Rationale- This analysis can be applied to any race by 
 replace the variable by that race. This would help us to identify if increase or 
@@ -53,15 +54,18 @@ title3 underlin =2 bcolor=aquamarine "Effect of African-American students  in AP
  
 footnote1 bcolor=aquamarine "This sas program uses a proc mean and proc print to produce
  the average api of the AmericanAfrican students grouped by county name";
-
-proc means data=api_analytic_file noprint mean; 
+* IL: consider using proc reg or proc glm to follow up with an inferential
+      study;
+proc means data=api_analytic_file mean; 
     class CNAME;
     var  AA_API13 AA_API12 AA_API11;
     output 
     out =  AA_MEAN_OUTPUT (DROP = _TYPE_ _FREQ_ ); 
 run;
-
+* IL: be consistent with capitalization, e.g., with noobs and where;
 proc print data=AA_MEAN_OUTPUT (obs = 10) NOOBS label ;
+    * IL: the SAS way of doing this is as follows:
+    WHERE ... not(missing(AA_API13) and not(missing(CNAME));
     WHERE _stat_ = 'MEAN' and AA_API13 is not null and CNAME is not null;   
     id CNAME;
     label CNAME = 'County Name'
@@ -69,6 +73,7 @@ proc print data=AA_MEAN_OUTPUT (obs = 10) NOOBS label ;
     AA_API12 = 'Average API of African American 2012'
     AA_API11 = 'Average API of African American 2011'
     _STAT_ = 'Average APIs';
+    * IL: the by isn't necessary;
     BY _STAT_;  
 run; 
 title;                                       
